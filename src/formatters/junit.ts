@@ -1,5 +1,6 @@
 import {Issue} from "../issue";
 import {IFormatter} from "./_iformatter";
+import {js2xml} from 'xml-js';
 
 function escape(xml: string): string {
   return xml.replace(/&/g, "&amp;")
@@ -12,20 +13,56 @@ function escape(xml: string): string {
 export class Junit implements IFormatter {
 
   public output(issues: Issue[], _fileCount: number): string {
-    let xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-      "<testsuites>\n" +
-      "  <testsuite name=\"abaplint\" tests=\"" + issues.length + "\" failures=\"" + issues.length + "\" errors=\"0\" skipped=\"0\">\n";
 
-    for (const issue of issues) {
-      xml = xml + "    <testcase classname=\"" + issue.getFile().getFilename() +
-        "[" + issue.getStart().getRow() + ", " + issue.getStart().getCol() +
-        "]\" name=\"" + issue.getKey() + "\">\n" +
-        "      <failure message=\"" + escape(issue.getMessage()) + "\"/>\n" +
-        "    </testcase>\n";
+    let outputObj = {
+      _declaration: {
+        _attributes: {
+          version: '1.0',
+          encoding: 'UTF-8'
+        }
+      },
+      testsuites: {
+        testsuite: {
+          _attributes: {
+            name: 'abaplint',
+            tests: issues.length || 1,
+            failures: issues.length,
+            errors: 0,
+            skipped: 0
+          },
+          testcase: [] as {}[]
+        }
+      }
+    };
+
+    if(issues.length > 0) {
+      for (const issue of issues) {
+        outputObj.testsuites.testsuite.testcase.push({
+          _attributes: {
+            classname: issue.getFile().getObjectName(),
+            file: issue.getFile().getFilename(),
+            //name: `[${issue.getStart().getRow()}, ${issue.getStart().getCol()}]: ${issue.getKey()}`
+            name: `${issue.getKey()}`
+          },
+          failure: {
+            _attributes: {
+              message: escape(issue.getKey()),
+            },
+            _cdata: `[${issue.getStart().getRow()}, ${issue.getStart().getCol()}, ${issue.getMessage()}`
+          }
+        });
+      }
     }
+    else {
+      outputObj.testsuites.testsuite.testcase.push({
+        _attributes: {
+          classname: 'none',
+          name: 'OK'
+        },
+      });
+    }    
 
-    xml = xml + "  </testsuite>\n" +
-      "</testsuites>";
+    let xml = js2xml(outputObj, { compact: true, spaces: 2 });
 
     return xml;
   }
