@@ -41,14 +41,13 @@ export class Junit implements IFormatter {
           _attributes: {
             classname: issue.getFile().getObjectName(),
             file: issue.getFile().getFilename(),
-            //name: `[${issue.getStart().getRow()}, ${issue.getStart().getCol()}]: ${issue.getKey()}`
-            name: `${issue.getKey()}`
+            name: `${issue.getFile().getFilename()}: [${issue.getStart().getRow()}, ${issue.getStart().getCol()}] - ${issue.getKey()}`
           },
           failure: {
             _attributes: {
-              message: escape(issue.getKey()),
+              message: issue.getKey(),
             },
-            _cdata: `[${issue.getStart().getRow()}, ${issue.getStart().getCol()}, ${issue.getMessage()}`
+            _cdata: `${issue.getFile().getFilename()} [${issue.getStart().getRow()}, ${issue.getStart().getCol()}]\n${issue.getMessage()}`
           }
         });
       }
