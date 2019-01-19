@@ -2,14 +2,6 @@ import {Issue} from "../issue";
 import {IFormatter} from "./_iformatter";
 import {js2xml} from 'xml-js';
 
-function escape(xml: string): string {
-  return xml.replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&apos;");
-}
-
 export class Junit implements IFormatter {
 
   public output(issues: Issue[], _fileCount: number): string {

@@ -1,13 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const xml_js_1 = require("xml-js");
-function escape(xml) {
-    return xml.replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&apos;");
-}
 class Junit {
     output(issues, _fileCount) {
         let outputObj = {
@@ -36,14 +29,13 @@ class Junit {
                     _attributes: {
                         classname: issue.getFile().getObjectName(),
                         file: issue.getFile().getFilename(),
-                        //name: `[${issue.getStart().getRow()}, ${issue.getStart().getCol()}]: ${issue.getKey()}`
-                        name: `${issue.getKey()}`
+                        name: `${issue.getFile().getFilename()}: [${issue.getStart().getRow()}, ${issue.getStart().getCol()}] - ${issue.getKey()}`
                     },
                     failure: {
                         _attributes: {
-                            message: escape(issue.getKey()),
+                            message: issue.getKey(),
                         },
-                        _cdata: `[${issue.getStart().getRow()}, ${issue.getStart().getCol()}, ${issue.getMessage()}`
+                        _cdata: `${issue.getFile().getFilename()} [${issue.getStart().getRow()}, ${issue.getStart().getCol()}]\n${issue.getMessage()}`
                     }
                 });
             }
