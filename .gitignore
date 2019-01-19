@@ -4,7 +4,6 @@ zcl_foo.clas.abap
 node_modules/
 worklist.txt
 .worklist.txt.swp
-build/
 coverage/
 npm-debug.log
 .alm/

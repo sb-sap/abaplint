@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const _utils_1 = require("../_utils");
+const Statements = require("../../../src/abap/statements/");
+const tests = [
+    "DATA begin of foo.",
+    "DATA BEGIN OF tab OCCURS 20.",
+    "DATA BEGIN OF COMMON PART blah.",
+    "DATA BEGIN OF status_/foo/bar.",
+    "DATA BEGIN OF /foo/bar.",
+];
+_utils_1.statementType(tests, "DATA BEGIN", Statements.DataBegin);
